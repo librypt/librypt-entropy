@@ -1,0 +1,10 @@
+[package]
+name = "librypt-entropy"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+getrandom = { version = "0.2", optional = true }
+
+[features]
+os = ["dep:getrandom"]
