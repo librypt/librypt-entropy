@@ -35,7 +35,23 @@ impl<const LENGTH: usize> Entropy<LENGTH> {
 
 #[cfg(feature = "os")]
 pub mod os {
-    pub enum OsEntropySourceError {}
+    use std::error::Error;
+
+    use crate::EntropySource;
+
+    #[derive(Debug)]
+    pub enum OsEntropySourceError {
+        /// This is temporary, will be removed in the future.
+        None,
+    }
+
+    impl std::fmt::Display for OsEntropySourceError {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            write!(f, "{:?}", self)
+        }
+    }
+
+    impl Error for OsEntropySourceError {}
 
     /// Entropy from the underlying Operating System.
     ///
@@ -48,7 +64,7 @@ pub mod os {
         fn read_bytes(&self, bytes: &mut [u8]) -> Result<(), Self::EntropySourceError> {
             match getrandom::getrandom(bytes) {
                 Ok(_) => Ok(()),
-                Err(_) => Err(Self::EntropySourceError),
+                Err(_) => Err(Self::EntropySourceError::None),
             }
         }
     }
